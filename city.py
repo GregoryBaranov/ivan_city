@@ -1,92 +1,61 @@
 from turtle import *
-speed(1000)
-def skai():
-    begin_fill()
-    color('purple')
-    goto(-250,0)
-    forward(500)
-    left(90)
-    forward(250)
-    left(90)
-    forward(500)
-    left(90)
-    forward(250)
-    end_fill()
+from random import randint
+from time import sleep
+w = 150
+h = 150
 
-def lend():
-    color('green')
-    penup()
-    goto(-250,0)
-    begin_fill()
-    pendown()
-    forward(250)
-    left(90)
-    forward(500)
-    left(90)
-    forward(250)
-    left(90)
-    forward(500)
-    end_fill()
+t1 = Turtle()
+t1.color('blue')
+t1.width(5)
+t1.shape('turtle')
 
-def home():
-    begin_fill()
-    color('grey')
-    penup()
-    goto(-230,-100)
-    pendown()
-    left(90)
-    left(90)
-    forward(200)
-    left(90)
-    forward(250)
-    left(90)
-    forward(200)
-    left(90)
-    forward(250)
-    end_fill()
-def sun():
-    color('red')
-    penup()
-    goto(210,100)
-    begin_fill()
-    circle(50)
-    end_fill()
+t2 = Turtle()
+t2.color('red')
+t2.width(5)
+t2.shape('turtle')
+t2.left(120)
 
-def window():
-    begin_fill()
-    for i in range(4):
-        forward(50)
-        left(90)
-    end_fill()
+t3 = Turtle()
+t3.color('green')
+t3.width(5)
+t3.shape('turtle')
+t3.right(120)
 
-def windows():
-    color('yellow')
-    penup()
-    goto(-210,120)
-    pendown()
-    window()
-    penup()
-    goto(-100,120)
-    pendown()
-    window()
-    penup()
-    goto(-210,0)
-    pendown()
-    window()
-    penup()
-    goto(-100,0)
-    pendown()
-    window()
+def catch1(x,y):
+    t1.penup()
+    t1.goto(randint(-w,w), randint(-h,h))
+    t1.pendown()
+    t1.left(randint(0,180))
 
-# def door():
-    
-def start():
-    skai()
-    lend()
-    home()
-    sun()
-    windows()
-   
+def catch2(x,y):
+    t2.penup()
+    t2.goto(randint(-w,w), randint(-h,h))
+    t2.pendown()
+    t2.left(randint(0,180))
 
-start()
+def catch3(x,y):
+    t3.penup()
+    t3.goto(randint(-w,w), randint(-h,h))
+    t3.pendown()
+    t3.left(randint(0,180))
+
+
+t1.onclick(catch1)
+t2.onclick(catch2)
+t3.onclick(catch3)
+
+def gameFinished(t1, t2, t3):
+  t1_outside = abs(t1.xcor()) > w or abs(t1.ycor()) > h
+  t2_outside = abs(t2.xcor()) > w or abs(t2.ycor()) > h
+  t3_outside = abs(t3.xcor()) > w or abs(t3.ycor()) > h
+  isOutside = t1_outside or t2_outside or t3_outside
+  return isOutside
+
+
+while gameFinished(t1,t2,t3) != True:
+   t1.forward(7)
+   t2.forward(7)
+   t3.forward(7)
+   sleep(0.1)
+
 exitonclick()
