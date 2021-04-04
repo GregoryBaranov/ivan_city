@@ -1,81 +1,70 @@
-from turtle import *
+#Подключение нужных модулей
+import pygame
 from random import randint
+pygame.init()
  
-tsize = 20
-s_width = 200
-s_height = 180
+#создание окна игры
+clock = pygame.time.Clock()
+back = (255, 255, 255) #цвет фона (background)
+mw = pygame.display.set_mode((500, 500)) #окно программы (main window)
+mw.fill(back)
  
-class Sprite(Turtle):
-   def __init__(self, x, y, step=10, shape='circle', color='black'):
-       Turtle.__init__(self)
-       self.penup()
-       self.speed(0)
-       self.goto(x, y)
-       self.color(color)
-       self.shape(shape)
-       self.step = step
-       self.points = 0
+#цвета
+BLACK = (0, 0, 0)
+LIGHT_BLUE = (200, 200, 255)
  
-   def move_up(self):
-       self.goto(self.xcor(), self.ycor() + self.step)
-   def move_down(self):
-       self.goto(self.xcor(), self.ycor() - self.step)
-   def move_left(self):
-       self.goto(self.xcor() - self.step, self.ycor())
-   def move_right(self):
-       self.goto(self.xcor() + self.step, self.ycor())
+class TextArea():
+   def __init__(self, x=0, y=0, width=10, height=10, color=None):
+       """ область: прямоугольник в нужном месте и нужного цвета """
+       #запоминаем прямоугольник:
+       self.rect = pygame.Rect(x, y, width, height)
+       #цвет заливки - или переданный параметр, или общий цвет фона
+       self.fill_color = color
  
-   def is_collide(self, sprite):
-       dist = self.distance(sprite.xcor(), sprite.ycor())
-       if dist < 30:
-           return True
-       else:
-           return False
+   #установить текст
+   def set_text(self, text, fsize=12, text_color=BLACK):
+       self.text = text
+       self.image = pygame.font.Font(None, fsize).render(text, True, text_color)
+      
+   #отрисовка прямоугольника с текстом
+   def draw(self, shift_x=0, shift_y=0):
+       pygame.draw.rect(mw, self.fill_color, self.rect)
+       mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))   
  
-   def set_move(self, x_start, y_start, x_end, y_end):
-       self.x_start = x_start
-       self.y_start = y_start       
-       self.x_end = x_end
-       self.y_end = y_end
-       self.goto(x_start, y_start)
-       self.setheading(self.towards(x_end, y_end)) #направление
-  
-   def make_step(self):
-       self.forward(self.step) #направление уже есть
+#создание карточек
+quest_card = TextArea(120, 100, 290, 70, LIGHT_BLUE)
+quest_card.set_text("Вопрос", 75)
  
-       if self.distance(self.x_end, self.y_end) < self.step: #если расстояние меньше полушага
-           self.set_move(self.x_end, self.y_end, self.x_start, self.y_start) #меняем направление
+ans_card = TextArea(120, 240, 290, 70, LIGHT_BLUE)
+ans_card.set_text("Ответ", 75)
  
-player = Sprite(0, -100, 10, 'circle', 'orange')
-enemy1 = Sprite(-s_width, 0, 15, 'square', 'red')
-enemy1.set_move(-s_width, 0, s_width, 0)
-enemy2 = Sprite(s_width, 70, 15, 'square', 'red')
-enemy2.set_move(s_width, 70, -s_width, 70)
-goal = Sprite(0, 120, 20, 'triangle', 'green')
-#goal.set_move(-s_width, 120, s_width, 0)  
+quest_card.draw(10,10)
+ans_card.draw(10,10)
  
-total_score = 0
+while 1:
+   pygame.display.update()
+    for event in pygame.event.get():
+       if event.type == pygame.KEYDOWN:
  
-scr = player.getscreen()
+           if event.key == pygame.K_q:
+               num = randint(1,3)
+               if num == 1:
+                   quest_card.set_text('Что изучаешь в Алгоритмике?', 25)
+               if num == 2:
+                   quest_card.set_text('На каком языке говорят во Франции?', 25)
+               if num == 3:
+                   quest_card.set_text('Что растёт на яблоне?', 35)      
  
-scr.listen()
+               quest_card.draw(10,25)
  
-scr.onkey(player.move_up, 'Up')
-scr.onkey(player.move_left, 'Left')
-scr.onkey(player.move_right, 'Right')
-scr.onkey(player.move_down, 'Down')
+           if event.key == pygame.K_a:
+               num = randint(1,3)
+               if num == 1:
+                   ans_card.set_text('Python', 35)
+               if num == 2:
+                   ans_card.set_text('Французский', 35)
+               if num == 3:
+                   ans_card.set_text('Яблоки', 35)      
  
-while total_score < 3:
-   enemy1.make_step()
-   enemy2.make_step()
-   #goal.make_step()
-   if player.is_collide(goal):
-       total_score += 1
-       player.goto(0, -100)
-   if player.is_collide(enemy1) or player.is_collide(enemy2):
-       goal.hideturtle()
-       break
- 
-if total_score == 3:
-   enemy1.hideturtle()
-   enemy2.hideturtle()
+               ans_card.draw(10, 25)
+   clock.tick(40)   
